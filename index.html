@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Barcode Generator</title>
+  <title>Barcode & QR Code Generator</title>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <link rel="icon" type="image/png" href="logo.png">
   <style>
     body {
@@ -10,9 +11,11 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh; /* full viewport height */
+      min-height: 100vh;
       font-family: Arial, sans-serif;
       background-color: #e9e5e5;
+      margin: 0;
+      padding: 20px 0;
     }
 
     .logo {
@@ -27,38 +30,102 @@
       margin-bottom: 20px;
     }
 
+    .container {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 280px;
+    }
+
     input {
       padding: 8px;
-      font-size: 16px;
-      margin-right: 10px;
+      font-size: 14px;
+      width: 80%;
+      margin-bottom: 10px;
     }
 
     button {
       padding: 8px 12px;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
     }
 
-    svg {
-      margin-top: 20px;
+    .output-area {
+      margin-top: 15px;
+      min-height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   </style>
 </head>
 <body>
   <img src="logo.png" alt="Company Logo" class="logo">
-  <h2>Generate a Barcode</h2>
-  <div>
-    <input type="text" id="inputData" placeholder="Enter code">
-    <button onclick="generateBarcode()">Generate</button>
+  <h2>Generator Tool</h2>
+  
+  <div class="container">
+    <!-- Barcode Section -->
+    <div class="card">
+      <h3>Barcode</h3>
+      <input type="text" id="barcodeInput" placeholder="Enter barcode data">
+      <button onclick="generateBarcode()">Generate Barcode</button>
+      <div class="output-area">
+        <svg id="barcode"></svg>
+      </div>
+    </div>
+
+    <!-- QR Code Section -->
+    <div class="card">
+      <h3>QR Code</h3>
+      <input type="text" id="qrInput" placeholder="Enter website or text">
+      <button onclick="generateQRCode()">Generate QR</button>
+      <div class="output-area" id="qrcode"></div>
+    </div>
   </div>
 
-  <svg id="barcode"></svg>
   <script>
     function generateBarcode(){
-      const text = document.getElementById("inputData").value;
-      JsBarcode("#barcode", text, {
-        format: "CODE128", lineColor: "#000", width:2, height:100, displayValue: true
-      });
+      const text = document.getElementById("barcodeInput").value;
+      if(text) {
+        JsBarcode("#barcode", text, {
+          format: "CODE128", lineColor: "#000", width: 2, height: 80, displayValue: true
+        });
+      }
+    }
+
+    let qrCodeInstance = null;
+
+    function generateQRCode(){
+      let text = document.getElementById("qrInput").value.trim();
+      const qrContainer = document.getElementById("qrcode");
+      
+      if(text) {
+        // Automatically ensure URLs have a protocol so scanning them directly opens the website seamlessly
+        if (!text.startsWith("http://") && !text.startsWith("https://") && text.includes(".")) {
+          text = "https://" + text;
+        }
+
+        qrContainer.innerHTML = ""; 
+        qrCodeInstance = new QRCode(qrContainer, {
+          text: text,
+          width: 120,
+          height: 120,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
     }
   </script>
 </body>
