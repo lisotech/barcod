@@ -3,6 +3,7 @@
 <head>
   <title>Barcode Generator</title>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+  <link rel="icon" type="image/png" href="logo.png">
   <style>
     body {
       display: flex;
@@ -14,7 +15,15 @@
       background-color: #e9e5e5;
     }
 
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+      border-radius: 12px;
+    }
+
     h2 {
+      margin-top: 0;
       margin-bottom: 20px;
     }
 
@@ -36,6 +45,7 @@
   </style>
 </head>
 <body>
+  <img src="logo.png" alt="Company Logo" class="logo">
   <h2>Generate a Barcode</h2>
   <div>
     <input type="text" id="inputData" placeholder="Enter code">
@@ -49,7 +59,6 @@
       JsBarcode("#barcode", text, {
         format: "CODE128", lineColor: "#000", width:2, height:100, displayValue: true
       });
-
     }
   </script>
 </body>
